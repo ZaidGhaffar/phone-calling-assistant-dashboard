@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Calling Assistant Dashboard</title>
+    <style>
+        :root {
+            --primary: #6a4c93;
+            --secondary: #1982c4;
+            --accent: #8ac926;
+            --background: #f8f9fa;
+            --text: #333;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--text);
+            background: linear-gradient(to bottom right, #4a0e78, #2e0f5e, #1a1147);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 1rem 0;
+            color: white;
+        }
+
+        h1 {
+            font-size: 2rem;
+        }
+
+        main {
+            padding: 2rem 0;
+        }
+
+        .tabs {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .tab-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 0.5rem;
+            padding: 0.5rem;
+            background-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-trigger {
+            background: none;
+            border: none;
+            color: white;
+            padding: 0.5rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .tab-trigger:hover, .tab-trigger.active {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .tab-content {
+            background-color: white;
+            padding: 1rem;
+            border-radius: 0 0 8px 8px;
+        }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 1rem;
+        }
+
+        .card-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .card-title {
+            font-size: 1.25rem;
+            font-weight: bold;
+        }
+
+        .card-content {
+            padding: 1rem;
+        }
+
+        .grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        @media (min-width: 768px) {
+            .grid-cols-2 {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .grid-cols-4 {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+
+        .text-3xl {
+            font-size: 1.875rem;
+            font-weight: bold;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+
+        .badge-blue {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-gray {
+            background-color: #6b7280;
+            color: white;
+        }
+
+        .badge-red {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-yellow {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-green {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .button-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .button-secondary {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        .button-outline {
+            background-color: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+
+        .space-y-4 > * + * {
+            margin-top: 1rem;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .w-full {
+            width: 100%;
+        }
+
+        select, input, textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen">
+        <header>
+            <div class="container">
+                <h1>AI Calling Assistant Dashboard</h1>
+            </div>
+        </header>
+        <main class="container">
+            <div class="tabs">
+                <div class="tab-list" id="tabList">
+                    <button class="tab-trigger active" data-tab="call-stats">Call Stats</button>
+                    <button class="tab-trigger" data-tab="call-insights">Call Insights</button>
+                    <button class="tab-trigger" data-tab="script-customization">Script Customization</button>
+                    <button class="tab-trigger" data-tab="voice-selection">Voice Selection</button>
+                    <button class="tab-trigger" data-tab="bot-management">Bot Management</button>
+                    <button class="tab-trigger" data-tab="live-call-listening">Live Call Listening</button>
+                    <button class="tab-trigger" data-tab="call-recordings">Call Recordings</button>
+                    <button class="tab-trigger" data-tab="api-key-management">API Key Management</button>
+                    <button class="tab-trigger" data-tab="custom-integrations">Custom Integrations</button>
+                    <button class="tab-trigger" data-tab="advanced-analytics">Advanced Analytics</button>
+                </div>
+                <div class="tab-content">
+                    <div id="call-stats" class="tab-pane active">
+                        <div class="grid grid-cols-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Total Calls</h2>
+                                </div>
+                                <div class="card-content">
+                                    <p class="text-3xl">53</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Average Duration</h2>
+                                </div>
+                                <div class="card-content">
+                                    <p class="text-3xl">3m 42s</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Completed Calls</h2>
+                                </div>
+                                <div class="card-content">
+                                    <p class="text-3xl">48</p>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Dropped Calls</h2>
+                                </div>
+                                <div class="card-content">
+                                    <p class="text-3xl">5</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Calls per Day</h2>
+                            </div>
+                            <div class="card-content">
+                                <canvas id="callsPerDayChart" width="400" height="200"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="call-insights" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Recent Call Insights</h2>
+                            </div>
+                            <div class="card-content">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Phone Number</th>
+                                            <th>Interest Level</th>
+                                            <th>Status</th>
+                                            <th>Sentiment</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>+1 (555) 123-4567</td>
+                                            <td><span class="badge badge-blue">Interested</span></td>
+                                            <td><span class="badge badge-red">Important</span></td>
+                                            <td><span class="badge badge-green">Positive</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>+1 (555) 987-6543</td>
+                                            <td><span class="badge badge-gray">Not Interested</span></td>
+                                            <td><span class="badge badge-yellow">Spam</span></td>
+                                            <td><span class="badge badge-red">Negative</span></td>
+                                        </tr>
+                                        <tr>
+                                            <td>+1 (555) 246-8135</td>
+                                            <td><span class="badge badge-blue">Interested</span></td>
+                                            <td><span class="badge badge-blue">Follow-up</span></td>
+                                            <td><span class="badge badge-gray">Neutral</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="script-customization" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Script Customization</h2>
+                            </div>
+                            <div class="card-content space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <select id="scriptVersion">
+                                        <option value="1.0">Version 1.0</option>
+                                        <option value="1.1">Version 1.1</option>
+                                        <option value="2.0">Version 2.0</option>
+                                    </select>
+                                    <button class="button button-primary">New Version</button>
+                                </div>
+                                <textarea id="scriptContent" rows="10" placeholder="Enter your script here..."></textarea>
+                                <div class="flex justify-between">
+                                    <button class="button button-outline">Upload Script</button>
+                                    <button class="button button-primary">Save Changes</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="voice-selection" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Voice Selection</h2>
+                            </div>
+                            <div class="card-content space-y-4">
+                                <div>
+                                    <label for="voice">Voice</label>
+                                    <select id="voice">
+                                        <option value="male1">Male 1</option>
+                                        <option value="female1">Female 1</option>
+                                        <option value="neutral1">Neutral 1</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="accent">Accent</label>
+                                    <select id="accent">
+                                        <option value="american">American</option>
+                                        <option value="british">British</option>
+                                        <option value="australian">Australian</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label for="tone">Tone</label>
+                                    <input type="range" id="tone" min="0" max="100" value="50">
+                                </div>
+                                <div>
+                                    <label for="persona">Persona</label>
+                                    <select id="persona">
+                                        <option value="friendly">Friendly</option>
+                                        <option value="formal">Formal</option>
+                                        <option value="casual">Casual</option>
+                                    </select>
+                                </div>
+                                <button class="button button-primary w-full">Apply Voice Settings</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bot-management" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Bot Management</h2>
+                            </div>
+                            <div class="card-content">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Bot Name</th>
+                                            <th>API Key</th>
+                                            <th>Tasks</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Sales Bot</td>
+                                            <td>sk_1234567890</td>
+                                            <td>Cold Calls, Follow-ups</td>
+                                            <td><button class="button button-outline">Edit</button></td>
+                                        </tr>
+                                        <tr>
+                                            <td>Support Bot</td>
+                                            <td>sk_0987654321</td>
+                                            <td>Customer Service, Technical Support</td>
+                                            <td><button class="button button-outline">Edit</button></td>
+                                        </tr>
+                                        
+                                        <tr>
+                                            <td>Survey Bot</td>
+                                            <td>sk_1357924680</td>
+                                            <td>Feedback Collection, Market Research</td>
+                                            <td><button class="button button-outline">Edit</button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="button button-primary" style="margin-top: 1rem;">Add New Bot</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="live-call-listening" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Live Call Listening</h2>
+                            </div>
+                            <div class="card-content space-y-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <p class="text-lg font-semibold">Active Call</p>
+                                        <p class="text-sm text-gray-500">+1 (555) 123-4567</p>
+                                        <p class="text-sm text-gray-500">Duration: 2:34</p>
+                                    </div>
+                                    <div>
+                                        <button class="button button-outline">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+                                        </button>
+                                        <button class="button button-outline">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button class="button button-primary w-full">Take Over Call</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="call-recordings" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Call Recordings</h2>
+                            </div>
+                            <div class="card-content">
+                                <div class="flex justify-between items-center" style="margin-bottom: 1rem;">
+                                    <input type="text" placeholder="Search recordings..." style="max-width: 300px;">
+                                    <button class="button button-outline">Filter</button>
+                                </div>
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Duration</th>
+                                            <th>Phone Number</th>
+                                            <th>Tags</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>2023-06-01</td>
+                                            <td>5:23</td>
+                                            <td>+1 (555) 123-4567</td>
+                                            <td>Sales, Interested</td>
+                                            <td>
+                                                <button class="button button-outline">Play</button>
+                                                <button class="button button-outline">Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2023-06-02</td>
+                                            <td>3:45</td>
+                                            <td>+1 (555) 987-6543</td>
+                                            <td>Support, Resolved</td>
+                                            <td>
+                                                <button class="button button-outline">Play</button>
+                                                <button class="button button-outline">Download</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>2023-06-03</td>
+                                            <td>7:12</td>
+                                            <td>+1 (555) 246-8135</td>
+                                            <td>Sales, Follow-up</td>
+                                            <td>
+                                                <button class="button button-outline">Play</button>
+                                                <button class="button button-outline">Download</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="api-key-management" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">API Key Management</h2>
+                            </div>
+                            <div class="card-content">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Name</th>
+                                            <th>API Key</th>
+                                            <th>Status</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Production Key</td>
+                                            <td>sk_prod_1234567890</td>
+                                            <td>Active</td>
+                                            <td>
+                                                <button class="button button-outline">Revoke</button>
+                                                <button class="button button-outline">Regenerate</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Development Key</td>
+                                            <td>sk_dev_0987654321</td>
+                                            <td>Active</td>
+                                            <td>
+                                                <button class="button button-outline">Revoke</button>
+                                                <button class="button button-outline">Regenerate</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Test Key</td>
+                                            <td>sk_test_1357924680</td>
+                                            <td>Inactive</td>
+                                            <td>
+                                                <button class="button button-outline">Revoke</button>
+                                                <button class="button button-outline">Regenerate</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <button class="button button-primary" style="margin-top: 1rem;">Generate New API Key</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="custom-integrations" class="tab-pane hidden">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2 class="card-title">Custom Integrations</h2>
+                            </div>
+                            <div class="card-content space-y-4">
+                                <div>
+                                    <h3 class="text-lg font-semibold">Groq API Integration</h3>
+                                    <input type="text" placeholder="Enter Groq API Key">
+                                    <button class="button button-primary" style="margin-top: 0.5rem;">Save Groq API Key</button>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold">CRM Integrations</h3>
+                                    <button class="button button-outline w-full" style="margin-bottom: 0.5rem;">
+                                        <img src="/placeholder.svg?height=20&width=20" style="margin-right: 0.5rem;" alt="Salesforce logo">
+                                        Connect Salesforce
+                                    </button>
+                                    <button class="button button-outline w-full">
+                                        <img src="/placeholder.svg?height=20&width=20" style="margin-right: 0.5rem;" alt="HubSpot logo">
+                                        Connect HubSpot
+                                    </button>
+                                </div>
+                                <div>
+                                    <h3 class="text-lg font-semibold">Custom Webhook</h3>
+                                    <input type="text" placeholder="Enter webhook URL">
+                                    <button class="button button-primary" style="margin-top: 0.5rem;">Add Webhook</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="advanced-analytics" class="tab-pane hidden">
+                        <div class="grid grid-cols-2">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Conversion Rates by Script</h2>
+                                </div>
+                                <div class="card-content">
+                                    <canvas id="conversionRatesChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header">
+                                    <h2 class="card-title">Most Used Voice Personas</h2>
+                                </div>
+                                <div class="card-content">
+                                    <canvas id="voicePersonasChart" width="400" height="200"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Tab functionality
+        const tabList = document.getElementById('tabList');
+        const tabPanes = document.querySelectorAll('.tab-pane');
+
+        tabList.addEventListener('click', (e) => {
+            if (e.target.classList.contains('tab-trigger')) {
+                const tabId = e.target.getAttribute('data-tab');
+                document.querySelectorAll('.tab-trigger').forEach(trigger => trigger.classList.remove('active'));
+                e.target.classList.add('active');
+                tabPanes.forEach(pane => pane.classList.add('hidden'));
+                document.getElementById(tabId).classList.remove('hidden');
+            }
+        });
+
+        // Call Stats Chart
+        const callsPerDayCtx = document.getElementById('callsPerDayChart').getContext('2d');
+        new Chart(callsPerDayCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                datasets: [{
+                    label: 'Calls per Day',
+                    data: [12, 19, 3, 5, 2, 3, 9],
+                    backgroundColor: 'rgba(75, 192, 192, 0.6)',
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        // Advanced Analytics Charts
+        const conversionRatesCtx = document.getElementById('conversionRatesChart').getContext('2d');
+        new Chart(conversionRatesCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Script A', 'Script B', 'Script C'],
+                datasets: [{
+                    label: 'Conversion Rate (%)',
+                    data: [65, 45, 80],
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100
+                    }
+                }
+            }
+        });
+
+        const voicePersonasCtx = document.getElementById('voicePersonasChart').getContext('2d');
+        new Chart(voicePersonasCtx, {
+            type: 'pie',
+            data: {
+                labels: ['Friendly', 'Formal', 'Casual'],
+                datasets: [{
+                    data: [400, 300, 300],
+                    backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56'],
+                    hoverBackgroundColor: ['#FF6384', '#36A2EB', '#FFCE56']
+                }]
+            }
+        });
+    </script>
+</body>
+</html>
